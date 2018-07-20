@@ -14,21 +14,9 @@
         }
          
     </style>
+    <script src="js/Helper.js"></script>
     <script src="js/SortingStruct.class.js"></script>
     <script>
-        //Helper functions
-        // swap  each item in array with item: on random index  
-        Array.prototype.randomize = function() {
-            for (var i = 0; i < this.length; i++){
-                var a = this[i];
-                var b = Math.floor(Math.random() * this.length);
-                this[i] = this[b];
-                this[b] = a;
-            }
-            return this;
-        }
-        
-        
         
         var folders = {
             items: [
@@ -86,125 +74,43 @@
         console.log('Примечание: сортируются по принципу Папки вверху ФС!');
         console.log('Нажмите клавишу R (рандом) - для получения структуры ФС в перемешанном виде');
         console.log('Примечание: при каждом нажатии на R - структура должны быть разной (рандомной)');
+        
+        console.log('Примечание: клавиша С для очистки консоли');
 
     
 
         // **************************************
-        // **          СПАСИБО!                **
+        // **          Sorting Test            **
         // **************************************
- 
-     
-        let arrToSort = folders.items.slice(); //copy folder items array
-        showSplitter('1. Display default object: ');
-        console.log('Default object: ', arrToSort);
+        let sorting = new SortingStruct(folders);  
         
-        //display items 
-        displayItemsInObj(arrToSort, null);  
+        //        uncomment  call funcstions for testing if needed
+        
+        //        let arrToSort = folders.items.slice(); //copy folder items array
+        //        showSplitter('1. Display default object: ');
+        //        console.log('Default object: ', arrToSort);
+        //        
+        //        //display items 
+        //        sorting.displayItemsInObj(arrToSort);  
+        //    
+        //       //shuffle sorted array      
+        //        sorting.processItems(arrToSort, null,  arrToSort.randomize)
+        //        showSplitter('2. Shuffle items result: ');
+        //        console.log(arrToSort);
+        //        console.log('Display tree of default obj', arrToSort);
+        //        sorting.displayItemsInObj(arrToSort);
+        //        
+        //        console.log('sorting obj', sorting);
+        //        showSplitter('3. Sort items by folder first ');   
+        //        sorting.sortByProperty(arrToSort); 
+        //        sorting.displayItemsInObj(arrToSort, null);  
+        //        console.log('items sorted by property folder ', arrToSort);
+        //       
+        //        
+        //        showSplitter('4. Default items does Not changed');        
+        //        sorting.displayItemsInObj(folders.items);
+        //        console.log('original object: ', folders.items);
     
-       //shuffle sorted array      
-        processItems(arrToSort, null,  arrToSort.randomize)
-        showSplitter('2. Shuffle items result: ');
-        console.log(arrToSort);
-        console.log('Display tree of default obj', arrToSort);
-        displayItemsInObj(arrToSort, null);
-        
-        
-        showSplitter('3. Sort items by folder first ');  
-        const propName = 'folder';
-        sortByProperty(arrToSort); 
-        displayItemsInObj(arrToSort, null);  
-        console.log('items sorted by property folder ', arrToSort);
-      
-        
-        showSplitter('4. Default items does Not changed');        
-        displayItemsInObj(folders.items, null);
-        console.log('original object: ', folders.items);
-      
-    
-    //@Todo move this to class
-    // **************************************
-    // **       Sorting Functions          **
-    // **************************************
-        
-    //compare func for sort  concrete items by property name
-    //using propNama == folder in closure
-   function compareTwoObjects(a, b)  { 
-         //0 if a.propName == b.propName   
-         let res = 0;  
-         //propName (folder) go first, other props last
-         if (a.type === propName) { res = -1 } 
-         if (a.type !== propName) { res =  1 }  
-         return res;
-   }      
-        
-    //function sorts by propertyName using closure and recursion 
-    //change items parameters via reference    
-    function sortByProperty(items, parentObj){  
-        let  sortedItems =   items.sort(compareTwoObjects); 
-        //add nested items
-        if (parentObj)
-            parentObj.items = sortedItems; 
-        //process other nested objects
-        items.forEach((item, index) => {
-           if (item.hasOwnProperty('items')) {  //go reсursion deeper                
-                sortByProperty(item.items, item)
-            }             
-        }); 
-    }
-      
-    function shuffleItems(items, parentObj){   
-        items.randomize(); 
-        //add nested items
-        if (parentObj)
-            parentObj.items = items; 
-        //process other nested objects
-        items.forEach((item, index) => {
-           if (item.hasOwnProperty('items')) {             
-                shuffleItems(item.items, item)
-            }             
-        }); 
-     }
-      
-        
-     //display items recursively    
-     function displayItemsInObj(items, parentObj, depth=0){   
-        //process other nested objects  
-        items.forEach((item, index) => {  
-            displayItem(item, depth);
-            if (item.hasOwnProperty('items')) {  //go reсursion deeper  
-               ++depth;
-               displayItemsInObj(item.items, item, depth)               
-            }
-        }); 
-      
-    }    
-      
-    //display item properties on console    
-    function displayItem(item, depth) {
-        let depthOutput = '';
-        for (let i = 0; i < depth; i++)
-            depthOutput += '__';
-        console.log(depthOutput + '['+ item.type + ']' , item.name);
-    }  
-        
-    //Go through object items in deep recursion
-    //apply callback function at each item array   
-    //params array    
-    function processItems(items, parentObj, callback, params = []){   
-        if (typeof callback == 'function' )
-            callback.apply(items, params);
-        else 
-            return;  
-        //add nested items
-        if (parentObj)
-            parentObj.items = items; 
-        //process other nested objects
-        items.forEach((item, index) => {
-           if (item.hasOwnProperty('items')) {             
-                processItems(item.items, item, callback, params)
-            }             
-        }); 
-     }
     </script>
 </head>
 <body>
