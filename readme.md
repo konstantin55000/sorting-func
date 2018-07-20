@@ -7,9 +7,10 @@ Done:
 3. Binding key to sorting functions
         3.1 Optional: move functions to class for clearness.
         3.2 Testing by hand
-        
-Todo:
-   
-    4. upload to Codesandbox for convinience. Maybe ..
-    (For now, import from github to codesandbox is not working properly.)
+4. upload to Codesandbox for convinience. 
+https://93wj83z11r.codesandbox.io
+
+ 
+      
+ 
    
