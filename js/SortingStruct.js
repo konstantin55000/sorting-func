@@ -1,8 +1,8 @@
 'use strict'
- //@Todo: move contents  functions from main scripts to this class 
- 
+    
 class SortingStruct { 
   
+    //take @folders Object and @currentProp string: current property sorting by.
     constructor(folders, currentProp='folder'){ 
         let self;
       
@@ -66,6 +66,7 @@ class SortingStruct {
             e.preventDefault();              
     }  
     
+    //@items array recieve folders.items prop
     //method make sorting by propertyName  
     //change items via reference    
     sortByProperty(items, parentObj=null){  
@@ -78,7 +79,8 @@ class SortingStruct {
            if (item.hasOwnProperty('items')) {  //go reсursion deeper                
                 this.sortByProperty(item.items, item)
             }             
-        }); 
+        });
+        return items;
     }
     
      //display item properties on console    
@@ -89,6 +91,7 @@ class SortingStruct {
         console.log(depthOutput + '['+ item.type + ']' , item.name);
     }   
     
+     //@items array recieve folders.items prop
      //display items recursively  
      displayItemsInObj(items, parentObj=null, depth=0){   
         //process other nested objects  
@@ -101,6 +104,7 @@ class SortingStruct {
         }); 
       
     }     
+    //@items array recieve folders.items prop
     //Go through object items in recursion
     //apply callback function at each item array   
     //@Todo: merge processItems with sortyByProperty in the future   
@@ -122,7 +126,7 @@ class SortingStruct {
     
     
     //Getters and setters
-    //get copy of items 
+    //get copy of @items array (in current sorting state)
     get items() {
         return this._arrToSort.slice(); 
     }
