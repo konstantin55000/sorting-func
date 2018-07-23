@@ -122,6 +122,7 @@ class SortingStruct {
                 this.processItems(item.items, item, callback, params)
             }             
         }); 
+        
      }
     
     
