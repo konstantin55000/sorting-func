@@ -12,10 +12,10 @@ Done:
     3.2 Testing by hand
 
 3.upload to Codesandbox for convinience. https://93wj83z11r.codesandbox.io
-4. unit test (partialy)
-Testing spec. by mocha and chai: not in Codesandbox
 
-Todo: 
+4. Test coverage sorting; shuffle and default use cases
+Testing spec. by mocha and chai: url with script with test:
+http://pochaevsky2.96.lt/sort-func/
 
-1. finish testing spec. 
-2. upload testing on codesandbox
+Todo:  
+5. upload testing on codesandbox, if this possible.

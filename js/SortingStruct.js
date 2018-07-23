@@ -34,8 +34,7 @@ class SortingStruct {
          return res;
    }      
      
-    bindKeyEvents(e) {
-        
+    bindKeyEvents(e) { 
             switch(e.keyCode) {
                 //add needed properties    
                 case 68: {
@@ -63,7 +62,8 @@ class SortingStruct {
                 }
                 default: return;  
             }
-            e.preventDefault();              
+            e.preventDefault();
+            e.stopImmediatePropagation();
     }  
     
     //@items array recieve folders.items prop
