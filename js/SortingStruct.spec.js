@@ -1,7 +1,7 @@
 describe("SortingStruct", function () {
 
-       //define variables for testing
-      let folders = {
+         //define variables for testing
+         const folders = {
             items: [
 
                 {
@@ -35,19 +35,11 @@ describe("SortingStruct", function () {
                 }
 
                 ]
-        };
-    
-    
-           let sortedByFolder =  {
+        };  //default array 
+         const defaultItems = folders.items.slice(); 
+         let sortedByFolder =  {
             items: [
-                {
-                    name: 'homer.png',
-                    type: 'file'
-                },
-                {
-                    name: 'abc',
-                    type: 'folder'
-                },
+               
                 {
                     name: 'xyz',
                     type: 'folder',
@@ -56,23 +48,30 @@ describe("SortingStruct", function () {
                             name: 'xxx',
                             type: 'folder',
                             items: [
-
-                                {
-                                    name: 'lisa.png',
-                                    type: 'file'
-                                },
+ 
                                 {
                                     name: 'lisa folder',
                                     type: 'folder'
                                 },
+                                {
+                                    name: 'lisa.png',
+                                    type: 'file'
+                                },
                                 ]
                         }
                         ]
-                }
+                },
+                {
+                    name: 'abc',
+                    type: 'folder'
+                },
+                {
+                    name: 'homer.png',
+                    type: 'file'
+                } 
 
                 ]
-           };
-        
+           }; 
          let sortedByFile =   {
             items: [
 
@@ -91,8 +90,7 @@ describe("SortingStruct", function () {
                         {
                             name: 'xxx',
                             type: 'folder',
-                            items: [
-
+                            items: [ 
                                 {
                                     name: 'lisa.png',
                                     type: 'file'
@@ -107,8 +105,7 @@ describe("SortingStruct", function () {
                 }
 
                 ] };
-      
-         
+       
         let folderStruct = new SortingStruct(folders, 'folder');
         let fileStruct = new SortingStruct(folders, 'file'); //obj with sort by file
     
@@ -117,6 +114,9 @@ describe("SortingStruct", function () {
         
         it("Sorting by property == 'folder':   folders goes first;  after folders  goes other properties ", function () {
             let expectSortedObj =  folderStruct.sortByProperty(folders.items);
+            console.log('expected folder items ', expectSortedObj);
+            console.log('sorted items by Folder first', sortedByFolder.items);
+            console.log('equal?', Object.is(expectSortedObj, sortedByFolder.items ) );
             assert.equal(expectSortedObj, sortedByFolder.items);
         });
         expectSortedObj =  fileStruct.sortByProperty(folders.items); 
@@ -126,15 +126,41 @@ describe("SortingStruct", function () {
     });
 
 
-    //  describe("Check return default array unchanged", function() {
-    //
-    //    function makeTest(x) {
-    //      it("Always returns default array unchanged", function() {
-    //        assert.equal( );
-    //      });
-    //    } 
-    //
-    //  });
+      describe("Check return default array unchanged", function() {
+    
+        function shuffleAndCheckDefault(x) {
+          it("Default array is unchanged after shuffle array", function() {
+           
+              console.log('\n step '+ x + ':'); 
+              //shuffle sorted array      
+              let arrToSort = defaultItems;
+              folderStruct.processItems(arrToSort, null,  arrToSort.randomize);
+              console.log('check default array after shuffle: ');
+              assert.equal(defaultItems, defaultItems);
+              sorting.displayItemsInObj(defaultItems); 
+              
+          });
+        } 
+         for (var x = 1; x < 3; x++) {
+            shuffleAndCheckDefault(x);
+         }
+          
+        function sortAndCheckDefault(x) {
+          it("After array sort : default array is unchanged" , function() {           
+              console.log('\n step '+ x + ':'); 
+              //shuffle sorted array      
+              let arrToSort = defaultItems; 
+              folderStruct.sortByProperty(arrToSort);
+              console.log('check default array after shuffle: ');
+              assert.equal(defaultItems, defaultItems);
+              sorting.displayItemsInObj(defaultItems); 
+              
+          });
+        } 
+         for (var x = 1; x < 3; x++) {
+            sortAndCheckDefault(x);
+         }
+      });
 
     //teoreticaly shuffled array may be == sorted array by any property;
     // so: do not check if shuffled array !== sorted array
