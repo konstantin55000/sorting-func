@@ -12,7 +12,13 @@
         .main .text {
             padding-bottom: 8px;
         }
-         
+        .main .test_wrap {
+             padding-top: 80px; 
+        }
+        #mocha {
+           padding-top: 0;
+           margin-top: 10px !important;
+       }
     </style>
     <script src="js/Helper.js"></script>
     <script src="js/SortingStruct.js"></script>
@@ -28,6 +34,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/2.0.0/chai.js"></script> 
   <script>
     var assert = chai.assert;
+    var expect = chai.expect;
   </script>
     
     
@@ -134,7 +141,9 @@
     <div class="main">
         <div class="text"><b>Результат работы в консоли. </b></div> 
         <div class="text">Поставлена задача *дополнить* файл; все что выше оставил как есть. Дополнил.</div>
-        <div id="mocha"></div>
+        <div class="test_wrap"><h4>Результаты тестов: </h4>
+            <div id="mocha"></div>
+        </div>
         
     </div>
     <script src="js/SortingStruct.spec.js"></script>

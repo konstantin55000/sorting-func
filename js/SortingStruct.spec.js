@@ -37,7 +37,9 @@ describe("SortingStruct", function () {
                 ]
         };  //default array 
          const defaultItems = folders.items.slice(); 
-         let sortedByFolder =  {
+         
+         //sorted structures
+        let sortedByFolder =  {
             items: [
                
                 {
@@ -72,7 +74,7 @@ describe("SortingStruct", function () {
 
                 ]
            }; 
-         let sortedByFile =   {
+        let sortedByFile =   {
             items: [
 
                 {
@@ -109,23 +111,7 @@ describe("SortingStruct", function () {
         let folderStruct = new SortingStruct(folders, 'folder');
         let fileStruct = new SortingStruct(folders, 'file'); //obj with sort by file
     
-    describe("Sorting array of object by property", function () { 
-        
-        
-        it("Sorting by property == 'folder':   folders goes first;  after folders  goes other properties ", function () {
-            let expectSortedObj =  folderStruct.sortByProperty(folders.items);
-            console.log('expected folder items ', expectSortedObj);
-            console.log('sorted items by Folder first', sortedByFolder.items);
-            console.log('equal?', Object.is(expectSortedObj, sortedByFolder.items ) );
-            assert.equal(expectSortedObj, sortedByFolder.items);
-        });
-        expectSortedObj =  fileStruct.sortByProperty(folders.items); 
-        it("Sorting by file, files goes firstly; next goes other properties  ", function () {
-           assert.equal(expectSortedObj, sortedByFile.items);
-        });
-    });
-
-
+    
       describe("Check return default array unchanged", function() {
     
         function shuffleAndCheckDefault(x) {
@@ -161,7 +147,38 @@ describe("SortingStruct", function () {
             sortAndCheckDefault(x);
          }
       });
-
+    
+    describe("Sorting array of object by property", function () { 
+        
+        
+        it("Sorting by property == 'folder':   folders goes first;  after folders  goes other properties ", function () {
+            let sortedObj = folders.items.slice();
+            folderStruct.sortByProperty(sortedObj);
+            console.log('sorted items by Folder first', sortedObj);
+            sorting.displayItemsInObj(sortedObj); 
+            
+            console.log('default items by Folder', sortedByFolder.items); 
+            sorting.displayItemsInObj(sortedByFolder.items);  
+            
+            expect(sortedObj).to.deep.equal(sortedByFolder.items);
+            
+           
+        });
+        expectSortedObj =  fileStruct.sortByProperty(folders.items); 
+        
+        it("Sorting by file, files goes firstly; next goes other properties  ", function () {
+            let sortedFiles = folders.items.slice();
+            fileStruct.sortByProperty(sortedFiles);
+            console.log('expected file items ', sortedFiles);
+            console.log('sorted items by File first', sortedByFile.items );
+            console.log('sorted obj equal to  sortedByFile arr?', Object.is(sortedFiles, sortedByFile.items ) );
+            sorting.displayItemsInObj(sortedByFile.items); 
+            sorting.displayItemsInObj(sortedFiles); 
+            expect(sortedFiles).to.deep.equal(sortedByFile.items);
+            
+        });
+    });
+ 
     //teoreticaly shuffled array may be == sorted array by any property;
     // so: do not check if shuffled array !== sorted array
     //    describe("Shuffle array:  shuffled array Always !== default array", function() {
