@@ -1,4 +1,11 @@
 //Helper functions
+const logToConsoleOn = false;
+const logSeparator = '=========================================='; 
+const logToConsole = function(string) {
+    if (logToConsoleOn)
+        console.log(string);
+}
+     
 // swap  each item in array with item: on random index  
 Array.prototype.randomize = function() {
     for (var i = 0; i < this.length; i++){
