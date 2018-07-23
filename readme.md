@@ -1,11 +1,21 @@
 sorting test.
 
-Done:
-1. Programmed object sorting by folder first;
-    shuffle and display deep object to console.
-2. tested by hand    https://prnt.sc/k8hhtm https://prnt.sc/k8hi7w  
+Sorting test task.
 
-Todo:
-    1. binding key to sorting functions
-        1.1 Optional: move functions to class for clearness.
-    2. desired Codesandbox for convinience.
+Done:
+
+1.Programmed Sorting functions:
+      sorting by folder first; shuffle ; display deep object to console. 
+      2. Call functions on kypress: R: shuffle; S sort, D default structure
+2.Sorting functions
+    3.1 Optional: move functions to class for clearness.
+    3.2 Testing by hand
+
+3.upload to Codesandbox for convinience. https://93wj83z11r.codesandbox.io
+4. unit test (partialy)
+Testing spec. by mocha and chai: not in Codesandbox
+
+Todo: 
+
+1. finish testing spec. 
+2. upload testing on codesandbox
