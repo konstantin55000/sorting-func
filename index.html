@@ -19,33 +19,7 @@
            padding-top: 0;
            margin-top: 10px !important;
        }
-    </style>
-<!--
-    <script src="js/Helper.js"></script>
-    <script src="js/SortingStruct.js"></script>
--->
-    
-  <!-- include mocha test framework -->
-<!--
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.1.0/mocha.css"> 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.1.0/mocha.js"></script> 
--->
-<!--
-  <script>
-   // mocha.setup('bdd');
-  </script>
--->
-
-  <!-- include chai -->
-<!--
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/2.0.0/chai.js"></script> 
-  <script>
-    var assert = chai.assert;
-    var expect = chai.expect;
-  </script>
--->
-    
-    
+    </style> 
     <script>
          
         var folders = {
@@ -66,10 +40,7 @@
                             name: 'xxx',
                             type: 'folder',
                             items: [
-                                {
-                                    name: 'zzz',
-                                    type: 'folder'
-                                },
+                                
                                 {
                                     name: 'lisa.png',
                                     type: 'file'
@@ -79,7 +50,7 @@
                                     type: 'file'
                                 },
                                 {
-                                    name: 'yyy',
+                                    name: '3 depth folder',
                                     type: 'folder'
                                 }
                             ]
@@ -100,39 +71,48 @@
         function showSplitter(string) {
             console.log('----------------------------------------- \n' + (string ? string : ''))
         } 
-        var strSeparator = '';
-        //arrayToSort; parentObject of this array; callback how to compare each 2 items  
-        function processItems(items, callback, parentObj=null){   
-          
+        
+        var arrayToShuffle = folders.items.slice(); 
+        var arrayToSort = folders.items.slice();
+        //helper for shuffle array
+        function randomVal(min, max) {
+          return Math.random() * (max - min);           
+        };
+         
+         var depthSeparator  = '';
+         //@items array recieve folders.items prop
+         //display items recursively  
+         function displayItemsToConsole(items){  
+            //process other nested objects  
+            items.forEach((item, index) => {  
+                console.log(depthSeparator + '['+ item.type + '] ' + item.name);  
+                if (item.hasOwnProperty('items')) {  //go reсursion deeper
+                   depthSeparator += '_';  
+                   displayItemsToConsole(item.items);                
+                } 
+            });
+            depthSeparator = depthSeparator.substr(2,0); //decrease depth string separator 
+        } 
+        
+       
+        //items @array to sort; parentObject of current array;
+        //callback @function: how to compare each 2 items  
+        function processItems(items, callback, parentObj = null){   
            var n = items.length;  
-           items = items.sort(callback);   
            //add link to sorted items
            if (parentObj)
-                parentObj.items = items;
-           else strSeparator = '';
+                parentObj.items = items; 
             //if item has chilrens process deeply
            for (let i = 0; i < n; i++) {
-               let item = items[i];
-               console.log(strSeparator + ' ' + '['+ item.type + ']'+ ' '  + item.name);
+               let item = items[i]; 
                if (item.hasOwnProperty('items'))
                    processItems(item.items, shuffle, item);  
            }  
-             
-         strSeparator += "_";
+         items = items.sort(callback); 
          return items;
            
-       } 
-
-        function randomVal(min, max) {
-          return Math.random() * (max - min);
-          console.log(Math.random() * (max - min));
-        };  
-
-      
-        var arrayToShuffle = folders.items.slice(); 
-        var arrayToSort = folders.items.slice();
-        
-        
+       }  
+         
         //compare 2 items for shuffle sort
         var shuffle = function(a, b) {          
           //if has own childs: go recursion deeply  
@@ -145,7 +125,7 @@
           return randomVal(1, 6) < randomVal(1,4); 
         }; 
         
-        //compare 2 items for shuffle sort
+        //compare 2 items
         var sortByFolder = function(a, b) {          
           //if has own childs: go recursion deeply
           if (a.hasOwnProperty('items')) {             
@@ -154,77 +134,67 @@
           if (b.hasOwnProperty('items')) {             
              processItems(b.items, sortByFolder, b)
           }  
-          return a.type =='file' && b.type == 'folder' ? 1 : 
-                 a.type =='folder' && b.type == 'file' ? -1 :
-                 0;           
+//            console.log('a', a.name +' '+ a.type);
+//            console.log('b', b.name +' '+ b.type);
+          return a.type =='file' && b.type == 'folder' ? -1 : 
+                 a.type =='folder' && b.type == 'file' ? 1 :
+                 0; 
+             
         }; 
-         
-        function main(){
-            console.log('Нажмите клавишу D (стандартные значения) - для получения структуры ФС в ИСХОДНОМ виде');
-            console.log('Примечание: после нажатия на D и/или R вы получите не изменённую сортировкой структуру!');
-            console.log('Нажмите клавишу S (сортировка) - для получения структуры ФС где папки всегда вверху');
-            console.log('Примечание: сортируются по принципу Папки вверху ФС!');
-            console.log('Нажмите клавишу R (рандом) - для получения структуры ФС в перемешанном виде');
-            console.log('Примечание: при каждом нажатии на R - структура должны быть разной (рандомной)');
-
-            console.log('Примечание: клавиша С для очистки консоли');
-            
-            
-             document.addEventListener("keydown", function(e){ 
-               switch(e.keyCode) {
-                //add needed properties    
-                case 68: {
-                   console.log('D Default items key was clicked', folders.items); 
-                   break;
-                }
-                case 82: {                
-                    console.log('\n R  Shuffle key was clicked'); 
-                    processItems(arrayToShuffle, shuffle); 
-                    console.log('items was shuffled:', arrayToShuffle); 
-                    break;
-                }
-                case 83: {  
-                    console.log('\n S Sorting key was clicked. \n Sort items by folder first'); 
-                    processItems(arrayToSort, sortByFolder);
-                    console.log('items was sorted:', arrayToSort);
-                    break;
-                }
-               case 67: { 
-                    console.clear();
-                    break;
-                }
-                default: return;  
-            }
-                e.preventDefault();
-                e.stopImmediatePropagation(); 
-            }, false);  
-        }
-
-        
-
+          
         // **************************************
         // **          Sorting Test            **
         // ************************************** 
-        main();
-      
+        
+        console.log('Нажмите клавишу D (стандартные значения) - для получения структуры ФС в ИСХОДНОМ виде');
+        console.log('Примечание: после нажатия на D и/или R вы получите не изменённую сортировкой структуру!');
+        console.log('Нажмите клавишу S (сортировка) - для получения структуры ФС где папки всегда вверху');
+        console.log('Примечание: сортируются по принципу Папки вверху ФС!');
+        console.log('Нажмите клавишу R (рандом) - для получения структуры ФС в перемешанном виде');
+        console.log('Примечание: при каждом нажатии на R - структура должны быть разной (рандомной)');
+
+        console.log('Примечание: клавиша С для очистки консоли');
+
+
+         document.addEventListener("keydown", function(e){ 
+           switch(e.keyCode) {
+            //add needed properties    
+            case 68: {
+               showSplitter('D Default items key was clicked '); 
+               console.log(folders.items);
+               displayItemsToConsole(folders.items); depthSeparator = '';  //clear output
+               break;
+            }
+            case 82: {                
+                showSplitter('\n R  Shuffle key was clicked: '); 
+                processItems(arrayToShuffle, shuffle);  
+                console.log('items was shuffled:', arrayToShuffle);                
+                displayItemsToConsole(arrayToShuffle); depthSeparator = ''; 
+                break;
+            }
+            case 83: {  
+                showSplitter('\n S Sorting items by folder first:'); 
+                processItems(arrayToSort, sortByFolder);
+                console.log('items was sorted:', arrayToSort); 
+                displayItemsToConsole(arrayToSort); depthSeparator = '';
+                break;
+            }
+           case 67: { 
+                console.clear();
+                break;
+            }
+            default: return;  
+        }
+            e.preventDefault();
+            e.stopImmediatePropagation(); 
+        }, false);  
+     
     </script>
 </head>
 <body>
 
     <div class="main">
-        <div class="text"><b>Результат работы в консоли. </b></div> 
-        <div class="text">Поставлена задача *дополнить* файл; все что выше оставил как есть. Дополнил.</div>
-<!--
-        <div class="test_wrap"><h4>Результаты тестов: </h4>
-            <div id="mocha"></div>
-        </div>
--->
-        
-    </div>
-<!--    <script src="js/SortingStruct.spec.js"></script> -->
-    <script>
-        //Run Tests
-        //mocha.run();
-    </script>
+        <div class="text"><h3>Результат работы в консоли. </h3></div>
+    </div> 
 </body>
 </html>
