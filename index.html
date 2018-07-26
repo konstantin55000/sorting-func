@@ -20,22 +20,30 @@
            margin-top: 10px !important;
        }
     </style>
+<!--
     <script src="js/Helper.js"></script>
     <script src="js/SortingStruct.js"></script>
+-->
     
   <!-- include mocha test framework -->
+<!--
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.1.0/mocha.css"> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.1.0/mocha.js"></script> 
+-->
+<!--
   <script>
-    mocha.setup('bdd');
+   // mocha.setup('bdd');
   </script>
+-->
 
   <!-- include chai -->
+<!--
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/2.0.0/chai.js"></script> 
   <script>
     var assert = chai.assert;
     var expect = chai.expect;
   </script>
+-->
     
     
     <script>
@@ -58,7 +66,10 @@
                             name: 'xxx',
                             type: 'folder',
                             items: [
-                               
+                                {
+                                    name: 'zzz',
+                                    type: 'folder'
+                                },
                                 {
                                     name: 'lisa.png',
                                     type: 'file'
@@ -89,54 +100,113 @@
         function showSplitter(string) {
             console.log('----------------------------------------- \n' + (string ? string : ''))
         } 
-        
-        console.log('Нажмите клавишу D (стандартные значения) - для получения структуры ФС в ИСХОДНОМ виде');
-        console.log('Примечание: после нажатия на D и/или R вы получите не изменённую сортировкой структуру!');
-        console.log('Нажмите клавишу S (сортировка) - для получения структуры ФС где папки всегда вверху');
-        console.log('Примечание: сортируются по принципу Папки вверху ФС!');
-        console.log('Нажмите клавишу R (рандом) - для получения структуры ФС в перемешанном виде');
-        console.log('Примечание: при каждом нажатии на R - структура должны быть разной (рандомной)');
-        
-        console.log('Примечание: клавиша С для очистки консоли');
+        var strSeparator = '';
+        //arrayToSort; parentObject of this array; callback how to compare each 2 items  
+        function processItems(items, callback, parentObj=null){   
+          
+           var n = items.length;  
+           items = items.sort(callback);   
+           //add link to sorted items
+           if (parentObj)
+                parentObj.items = items;
+           else strSeparator = '';
+            //if item has chilrens process deeply
+           for (let i = 0; i < n; i++) {
+               let item = items[i];
+               console.log(strSeparator + ' ' + '['+ item.type + ']'+ ' '  + item.name);
+               if (item.hasOwnProperty('items'))
+                   processItems(item.items, shuffle, item);  
+           }  
+             
+         strSeparator += "_";
+         return items;
+           
+       } 
 
-        function pow(x,n){
-            return Math.pow(x,n);
+        function randomVal(min, max) {
+          return Math.random() * (max - min);
+          console.log(Math.random() * (max - min));
+        };  
+
+      
+        var arrayToShuffle = folders.items.slice(); 
+        var arrayToSort = folders.items.slice();
+        
+        
+        //compare 2 items for shuffle sort
+        var shuffle = function(a, b) {          
+          //if has own childs: go recursion deeply  
+          if (a.hasOwnProperty('items')) {    
+             processItems(a.items, shuffle, a) 
+          } //else have no children
+          if (b.hasOwnProperty('items')) {  
+             processItems(b.items, shuffle, b ) 
+          }  
+          return randomVal(1, 6) < randomVal(1,4); 
+        }; 
+        
+        //compare 2 items for shuffle sort
+        var sortByFolder = function(a, b) {          
+          //if has own childs: go recursion deeply
+          if (a.hasOwnProperty('items')) {             
+             processItems(a.items, sortByFolder, a)
+          } //else have no children
+          if (b.hasOwnProperty('items')) {             
+             processItems(b.items, sortByFolder, b)
+          }  
+          return a.type =='file' && b.type == 'folder' ? 1 : 
+                 a.type =='folder' && b.type == 'file' ? -1 :
+                 0;           
+        }; 
+         
+        function main(){
+            console.log('Нажмите клавишу D (стандартные значения) - для получения структуры ФС в ИСХОДНОМ виде');
+            console.log('Примечание: после нажатия на D и/или R вы получите не изменённую сортировкой структуру!');
+            console.log('Нажмите клавишу S (сортировка) - для получения структуры ФС где папки всегда вверху');
+            console.log('Примечание: сортируются по принципу Папки вверху ФС!');
+            console.log('Нажмите клавишу R (рандом) - для получения структуры ФС в перемешанном виде');
+            console.log('Примечание: при каждом нажатии на R - структура должны быть разной (рандомной)');
+
+            console.log('Примечание: клавиша С для очистки консоли');
+            
+            
+             document.addEventListener("keydown", function(e){ 
+               switch(e.keyCode) {
+                //add needed properties    
+                case 68: {
+                   console.log('D Default items key was clicked', folders.items); 
+                   break;
+                }
+                case 82: {                
+                    console.log('\n R  Shuffle key was clicked'); 
+                    processItems(arrayToShuffle, shuffle); 
+                    console.log('items was shuffled:', arrayToShuffle); 
+                    break;
+                }
+                case 83: {  
+                    console.log('\n S Sorting key was clicked. \n Sort items by folder first'); 
+                    processItems(arrayToSort, sortByFolder);
+                    console.log('items was sorted:', arrayToSort);
+                    break;
+                }
+               case 67: { 
+                    console.clear();
+                    break;
+                }
+                default: return;  
+            }
+                e.preventDefault();
+                e.stopImmediatePropagation(); 
+            }, false);  
         }
+
+        
 
         // **************************************
         // **          Sorting Test            **
-        // **************************************
-        let sortBy = 'folder'; //sortBy = 'file'
-        let sorting = new SortingStruct(folders, sortBy);  
-        
-        //        uncomment  call funcstions for testing if needed
-        
-        //        let arrToSort = folders.items.slice(); //copy folder items array
-        //        showSplitter('1. Display default object: ');
-        //        console.log('Default object: ', arrToSort);
-        //        
-        //        //display items 
-        //        sorting.displayItemsInObj(arrToSort);  
-        //    
-        //       //shuffle sorted array      
-        //        sorting.processItems(arrToSort, null,  arrToSort.randomize)
-        //        showSplitter('2. Shuffle items result: ');
-        //        console.log(arrToSort);
-        //        console.log('Display tree of default obj', arrToSort);
-        //        sorting.displayItemsInObj(arrToSort);
-        //        
-        //        console.log('sorting obj', sorting);
-        //        showSplitter('3. Sort items by folder first ');   
-        //        sorting.sortByProperty(arrToSort); 
-        //        sorting.displayItemsInObj(arrToSort, null);  
-        //        console.log('items sorted by property folder ', arrToSort);
-        //       
-        //        
-        //        showSplitter('4. Default items does Not changed');        
-        //        sorting.displayItemsInObj(folders.items);
-        //        console.log('original object: ', folders.items);
-    
-       
+        // ************************************** 
+        main();
+      
     </script>
 </head>
 <body>
@@ -144,15 +214,17 @@
     <div class="main">
         <div class="text"><b>Результат работы в консоли. </b></div> 
         <div class="text">Поставлена задача *дополнить* файл; все что выше оставил как есть. Дополнил.</div>
+<!--
         <div class="test_wrap"><h4>Результаты тестов: </h4>
             <div id="mocha"></div>
         </div>
+-->
         
     </div>
-    <script src="js/SortingStruct.spec.js"></script> 
+<!--    <script src="js/SortingStruct.spec.js"></script> -->
     <script>
         //Run Tests
-        mocha.run();
+        //mocha.run();
     </script>
 </body>
 </html>
