@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>test</title>
+    <title>sorting test</title>
     
     <style>
         .main {
@@ -81,39 +81,45 @@
         };
          
          var depthSeparator  = '';
+         var strOutput = '';
+        
          //@items array recieve folders.items prop
          //display items recursively  
-         function displayItemsToConsole(items){  
-            //process other nested objects  
+         function displayItemsToConsole(items, saveAsString = false){  
+            
+            //process other nested objects   
             items.forEach((item, index) => {  
-                console.log(depthSeparator + '['+ item.type + '] ' + item.name);  
+                let tempStr = depthSeparator + '['+ item.type + '] ' + item.name + '\n';
+                if (saveAsString)
+                    strOutput +=  tempStr + '\n' ;
+                if (!saveAsString)
+                    console.log(tempStr);  
+                
                 if (item.hasOwnProperty('items')) {  //go reсursion deeper
                    depthSeparator += '_';  
-                   displayItemsToConsole(item.items);                
+                   displayItemsToConsole(item.items, saveAsString);                
                 } 
             });
             depthSeparator = depthSeparator.substr(2,0); //decrease depth string separator 
         } 
         
-       
+        
         //items @array to sort; parentObject of current array;
         //callback @function: how to compare each 2 items  
-        function processItems(items, callback, parentObj = null){   
-           var n = items.length;   
-          //if item has chilrens process deeply 
-          for (let i = 0; i < n; i++) {
-               let item = items[i]; 
-               if (item.hasOwnProperty('items'))
-                   processItems(item.items, callback, item);  
-          } 
-            
-         items.sort(callback); 
-         //add link to sorted items 
-         if (parentObj)  { 
-               parentObj.items = items; 
-         }
-         return items;
-           
+        function processItems(items, callback, parentObj = null){ 
+             var n = items.length;   
+              //if item has chilrens process deeply 
+             for (let i = 0; i < n; i++) {
+                   let item = items[i]; 
+                   if (item.hasOwnProperty('items'))
+                       processItems(item.items, callback, item);  
+             }  
+             items.sort(callback); 
+             //add link to sorted items 
+             if (parentObj)  { 
+                   parentObj.items = items; 
+             }   
+             return items; 
        }  
          
         //compare 2 items for shuffle sort
@@ -155,25 +161,29 @@
 
         console.log('Примечание: клавиша С для очистки консоли');
 
-
+         //init default items output (strOutput)
+         displayItemsToConsole(folders.items, true);
+         
          document.addEventListener("keydown", function(e){ 
            switch(e.keyCode) {
             //add needed properties    
-            case 68: {
-               showSplitter('D Default items key was clicked '); 
-               console.log(folders.items);
-               displayItemsToConsole(folders.items.slice()); depthSeparator = '';  //clear output
+            case 68: { 
+               showSplitter('D Default items key was clicked ');  
+               console.log(strOutput);  
                break;
             }
             case 82: {                
                 showSplitter('\n R  Shuffle key was clicked: '); 
+                arrayToShuffle = folders.items.slice();
                 processItems(arrayToShuffle, shuffle);  
-                console.log('items was shuffled:', arrayToShuffle);                
-                displayItemsToConsole(arrayToShuffle); depthSeparator = ''; 
+                console.log('items was shuffled:', arrayToShuffle);  
+                displayItemsToConsole(arrayToShuffle); depthSeparator = '';  
+                
                 break;
             }
             case 83: {  
                 showSplitter('\n S Sorting items by folder first:');  
+                arrayToSort = folders.items.slice();
                 processItems(arrayToSort, sortByFolder);
                 console.log('items was sorted:', arrayToSort); 
                 displayItemsToConsole(arrayToSort); depthSeparator = '';
