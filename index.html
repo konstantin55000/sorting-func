@@ -72,8 +72,9 @@
             console.log('----------------------------------------- \n' + (string ? string : ''))
         } 
         
-        var arrayToShuffle = folders.items.slice(); 
-        var arrayToSort = folders.items.slice();
+        var arrayToShuffle = folders.items.slice();
+        var arrayToSort  = folders.items.slice(); 
+        
         //helper for shuffle array
         function randomVal(min, max) {
           return Math.random() * (max - min);           
@@ -98,17 +99,19 @@
         //items @array to sort; parentObject of current array;
         //callback @function: how to compare each 2 items  
         function processItems(items, callback, parentObj = null){   
-           var n = items.length;  
-           //add link to sorted items
-           if (parentObj)
-                parentObj.items = items; 
-            //if item has chilrens process deeply
-           for (let i = 0; i < n; i++) {
+           var n = items.length;   
+          //if item has chilrens process deeply 
+          for (let i = 0; i < n; i++) {
                let item = items[i]; 
                if (item.hasOwnProperty('items'))
-                   processItems(item.items, shuffle, item);  
-           }  
-         items = items.sort(callback); 
+                   processItems(item.items, callback, item);  
+          } 
+            
+         items.sort(callback); 
+         //add link to sorted items 
+         if (parentObj)  { 
+               parentObj.items = items; 
+         }
          return items;
            
        }  
@@ -133,13 +136,10 @@
           } //else have no children
           if (b.hasOwnProperty('items')) {             
              processItems(b.items, sortByFolder, b)
-          }  
-//            console.log('a', a.name +' '+ a.type);
-//            console.log('b', b.name +' '+ b.type);
-          return a.type =='file' && b.type == 'folder' ? -1 : 
-                 a.type =='folder' && b.type == 'file' ? 1 :
-                 0; 
-             
+          } 
+          return a.type =='file' && b.type == 'folder' ? 1 :     
+                 a.type =='folder' && b.type == 'file' ? -1 :
+                 0;  
         }; 
           
         // **************************************
@@ -162,7 +162,7 @@
             case 68: {
                showSplitter('D Default items key was clicked '); 
                console.log(folders.items);
-               displayItemsToConsole(folders.items); depthSeparator = '';  //clear output
+               displayItemsToConsole(folders.items.slice()); depthSeparator = '';  //clear output
                break;
             }
             case 82: {                
@@ -173,7 +173,7 @@
                 break;
             }
             case 83: {  
-                showSplitter('\n S Sorting items by folder first:'); 
+                showSplitter('\n S Sorting items by folder first:');  
                 processItems(arrayToSort, sortByFolder);
                 console.log('items was sorted:', arrayToSort); 
                 displayItemsToConsole(arrayToSort); depthSeparator = '';
