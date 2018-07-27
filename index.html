@@ -25,44 +25,70 @@
         var folders = {
             items: [
                 {
-                    name: 'abc',
-                    type: 'folder'
+                    name: '1 abc',
+                    type: 'folder',
+                     items: [
+                                {
+                                    name: '2 lisa.png',
+                                    type: 'file'
+                                },
+                                {
+                                    name: '2 simpson.png',
+                                    type: 'file'
+                                },
+                    ]
                 },
                 {
-                    name: 'homer.png',
+                    name: '1 homer.png',
                     type: 'file'
                 },
                 {
-                    name: 'xyz',
+                    name: '1 xyz',
                     type: 'folder',
                     items: [
                         {
-                            name: 'xxx',
+                            name: '2 xxx',
                             type: 'folder',
                             items: [
                                 
                                 {
-                                    name: 'lisa.png',
+                                    name: '3 lisa.png',
                                     type: 'file'
                                 },
                                 {
-                                    name: 'simpson.png',
+                                    name: '3 simpson.png',
                                     type: 'file'
                                 },
                                 {
                                     name: '3 depth folder',
-                                    type: 'folder'
+                                    type: 'folder',
+                                    items: [
+                                            {
+                                                name: '4 brat.png',
+                                                type: 'file'
+                                            },
+                                            {
+                                                name: '4 depth folder',
+                                                type : 'folder',
+                                                items : [
+                                                    {name: '5depth file', type: 'file'},
+                                                    {name: '5depth folder', type: 'folder'}
+                                                ],
+                                               
+                                            
+                                        }
+                                    ]
                                 }
                             ]
                         }
                     ]
                 },
                 {
-                    name: 'ggg',
+                    name: '1 ggg',
                     type: 'folder'
                 },
                 {
-                    name: 'marge.png',
+                    name: '1 marge.png',
                     type: 'file'
                 }
             ]
@@ -80,27 +106,31 @@
           return Math.random() * (max - min);           
         };
          
-         var depthSeparator  = '';
-         var strOutput = '';
+         var depthSeparator  = ''; 
+         var depth = 0;
         
+         var strDefaultItems = ''; //strings for holding output to console
+         var strOutput = '';
          //@items array recieve folders.items prop
          //display items recursively  
-         function displayItemsToConsole(items, saveAsString = false){  
+         //problem with displaying depth separator
+         function prepareTreeOutput(items, displayDefaultItems = false){  
             
             //process other nested objects   
             items.forEach((item, index) => {  
-                let tempStr = depthSeparator + '['+ item.type + '] ' + item.name + '\n';
-                if (saveAsString)
-                    strOutput +=  tempStr + '\n' ;
-                if (!saveAsString)
-                    console.log(tempStr);  
-                
+                let tempStr = depthSeparator + '['+ item.type + '] ' + item.name + '\n';  
+                if (displayDefaultItems){
+                    strDefaultItems +=  tempStr
+                }
+                else { 
+                    strOutput +=  tempStr
+                }  
                 if (item.hasOwnProperty('items')) {  //go reсursion deeper
                    depthSeparator += '_';  
-                   displayItemsToConsole(item.items, saveAsString);                
+                   prepareTreeOutput(item.items, displayDefaultItems);                
                 } 
             });
-            depthSeparator = depthSeparator.substr(2,0); //decrease depth string separator 
+            depthSeparator = depthSeparator.substr(1,0); //decrease depth string separator  
         } 
         
         
@@ -162,14 +192,15 @@
         console.log('Примечание: клавиша С для очистки консоли');
 
          //init default items output (strOutput)
-         displayItemsToConsole(folders.items, true);
+         let outputDefaultItems = true;
+         prepareTreeOutput(folders.items, outputDefaultItems);
          
          document.addEventListener("keydown", function(e){ 
            switch(e.keyCode) {
             //add needed properties    
             case 68: { 
-               showSplitter('D Default items key was clicked ');  
-               console.log(strOutput);  
+               showSplitter('D Default items key was clicked ', strDefaultItems);  
+               console.log(folders.items);  
                break;
             }
             case 82: {                
@@ -177,8 +208,10 @@
                 arrayToShuffle = folders.items.slice();
                 processItems(arrayToShuffle, shuffle);  
                 console.log('items was shuffled:', arrayToShuffle);  
-                displayItemsToConsole(arrayToShuffle); depthSeparator = '';  
-                
+                prepareTreeOutput(arrayToShuffle);
+                console.log(strOutput);
+                depthSeparator = '';   strOutput = '';
+               
                 break;
             }
             case 83: {  
@@ -186,7 +219,10 @@
                 arrayToSort = folders.items.slice();
                 processItems(arrayToSort, sortByFolder);
                 console.log('items was sorted:', arrayToSort); 
-                displayItemsToConsole(arrayToSort); depthSeparator = '';
+                prepareTreeOutput(arrayToSort); 
+                console.log(strOutput);
+                depthSeparator = ''; strOutput = '';
+                 
                 break;
             }
            case 67: { 
