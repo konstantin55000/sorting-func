@@ -10,9 +10,11 @@ Done:
     For test console should open in new window :
     http://prntscr.com/kbe6bu
   
-  
-  Todo:
-   There is a problem with displaying depth separator on large depth tree.
-   after sort and shuffle; May think about this.
+ 5.  There was a problem with displaying depth separator on large depth tree.
+   after sort and shuffle; 
+   Problem was solved; but in exchange a code have been complicated a little;
+   will not merge this update in master branch for now.
+   
+
  
  

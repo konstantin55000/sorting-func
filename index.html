@@ -100,22 +100,28 @@
         
         var arrayToShuffle = folders.items.slice();
         var arrayToSort  = folders.items.slice(); 
+        var arraySorted = false;
         
         //helper for shuffle array
         function randomVal(min, max) {
           return Math.random() * (max - min);           
         };
-         
-         var depthSeparator  = ''; 
-         var depth = 0;
+          
+         var depth = 0; //recursion depth
         
          var strDefaultItems = ''; //strings for holding output to console
          var strOutput = '';
          //@items array recieve folders.items prop
          //display items recursively  
          //problem with displaying depth separator
-         function prepareTreeOutput(items, displayDefaultItems = false){  
-            
+         function prepareTreeOutput(items, displayDefaultItems = false){   
+             
+            let depthSeparator = ''; 
+            if (!items.depth)
+                 items.depth = depth;             
+            for (let i=1; i<=items.depth; i++){
+                  depthSeparator += '_'; 
+            }
             //process other nested objects   
             items.forEach((item, index) => {  
                 let tempStr = depthSeparator + '['+ item.type + '] ' + item.name + '\n';  
@@ -125,12 +131,12 @@
                 else { 
                     strOutput +=  tempStr
                 }  
-                if (item.hasOwnProperty('items')) {  //go reсursion deeper
-                   depthSeparator += '_';  
+                if (item.hasOwnProperty('items')) {  //go reсursion deeper  
+                   depth++; 
                    prepareTreeOutput(item.items, displayDefaultItems);                
                 } 
             });
-            depthSeparator = depthSeparator.substr(1,0); //decrease depth string separator  
+           
         } 
         
         
@@ -194,41 +200,37 @@
          //init default items output (strOutput)
          let outputDefaultItems = true;
          prepareTreeOutput(folders.items, outputDefaultItems);
-         
+         depth = 0;
          document.addEventListener("keydown", function(e){ 
            switch(e.keyCode) {
             //add needed properties    
             case 68: { 
-               showSplitter('D Default items key was clicked ', strDefaultItems);  
-               console.log(folders.items);  
+               showSplitter('D Default items key was clicked ');  
+               console.log(strDefaultItems);  
                break;
             }
             case 82: {                
-                showSplitter('\n R  Shuffle key was clicked: '); 
-                arrayToShuffle = folders.items.slice();
+                showSplitter('\n R  Shuffle key was clicked: ');  
                 processItems(arrayToShuffle, shuffle);  
                 console.log('items was shuffled:', arrayToShuffle);  
                 prepareTreeOutput(arrayToShuffle);
                 console.log(strOutput);
-                depthSeparator = '';   strOutput = '';
-               
+                strOutput = ''; depth = 0;
                 break;
             }
             case 83: {  
                 showSplitter('\n S Sorting items by folder first:');  
-                arrayToSort = folders.items.slice();
                 processItems(arrayToSort, sortByFolder);
+                prepareTreeOutput(arrayToSort);
                 console.log('items was sorted:', arrayToSort); 
-                prepareTreeOutput(arrayToSort); 
                 console.log(strOutput);
-                depthSeparator = ''; strOutput = '';
-                 
+                strOutput = ''; depth = 0;
                 break;
             }
            case 67: { 
                 console.clear();
                 break;
-            }
+           }
             default: return;  
         }
             e.preventDefault();
