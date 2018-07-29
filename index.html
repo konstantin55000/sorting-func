@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -108,6 +108,7 @@
         };
           
          var depth = 0; //recursion depth
+	 var sorted  = false; //if array already sorted
         
          var strDefaultItems = ''; //strings for holding output to console
          var strOutput = '';
@@ -219,8 +220,11 @@
                 break;
             }
             case 83: {  
-                showSplitter('\n S Sorting items by folder first:');  
-                processItems(arrayToSort, sortByFolder);
+                showSplitter('\n S Sorting items by folder first:'); 
+		if (!sorted){
+		    processItems(arrayToSort, sortByFolder);
+		    sorted = true;
+		}  
                 prepareTreeOutput(arrayToSort);
                 console.log('items was sorted:', arrayToSort); 
                 console.log(strOutput);
