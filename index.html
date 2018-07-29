@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -82,7 +82,7 @@
          
          var depthSeparator  = '';
          var strOutput = '';
-        
+       	 var sorted = false;
          //@items array recieve folders.items prop
          //display items recursively  
          function displayItemsToConsole(items, saveAsString = false){  
@@ -173,8 +173,7 @@
                break;
             }
             case 82: {                
-                showSplitter('\n R  Shuffle key was clicked: '); 
-                arrayToShuffle = folders.items.slice();
+                showSplitter('\n R  Shuffle key was clicked: ');                 
                 processItems(arrayToShuffle, shuffle);  
                 console.log('items was shuffled:', arrayToShuffle);  
                 displayItemsToConsole(arrayToShuffle); depthSeparator = '';  
@@ -182,8 +181,11 @@
                 break;
             }
             case 83: {  
-                showSplitter('\n S Sorting items by folder first:');  
-                arrayToSort = folders.items.slice();
+                showSplitter('\n S Sorting items by folder first:'); 
+		if (!sorted){
+		    processItems(arrayToSort, sortByFolder);
+		    sorted = true;
+		} 
                 processItems(arrayToSort, sortByFolder);
                 console.log('items was sorted:', arrayToSort); 
                 displayItemsToConsole(arrayToSort); depthSeparator = '';
